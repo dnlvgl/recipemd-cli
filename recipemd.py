@@ -4,10 +4,11 @@
 from bs4 import BeautifulSoup
 import urllib
 import codecs
+import sys
 
 # implement argparse
 
-url = 'http://www.chefkoch.de/rezepte/1616691268862802/Zucchini-Lasagne.html'
+url = sys.argv[1]
 page = urllib.urlopen(url)
 soup = BeautifulSoup(page.read())
 
@@ -33,4 +34,3 @@ with codecs.open(title.lower() + '.md', 'w', encoding="utf-8") as f: # use title
 	    # data = list of lists; join inner lists
 	f.write('\n\n' + '## Zubereitung' + '\n\n')
 	f.write(instruct.strip()) #.strip() to remove leadin and ending whitespace
-
