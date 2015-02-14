@@ -16,20 +16,14 @@ def chefkoch(soup):
     rows = table.find_all('tr')
     for row in rows:
         cols = row.find_all('td')
-        cols = [ele.text.strip() for ele in cols]
-        ingreds.append([ele for ele in cols if ele])  # get rid of empty values
+        cols = [s.text.strip() for s in cols]
+        ingreds.append([ele for ele in cols if ele]) # get rid of empty values
+    ingreds = ['- ' + ' '.join(s) for s in ingreds]
     # instructions
     instruct = soup.find('div', attrs={'id': 'rezept-zubereitung'}).text  # only get text
+    instruct = instruct.strip() # remove leadin and ending whitespace
     # write to file
-    with codecs.open(title.lower() + '.md', 'w', encoding="utf-8") as f:  # title = filename
-        f.write('# ' + title + '\n\n')
-        f.write('## Zutaten' + '\n\n')
-        for inner_list in ingreds:
-            f.write('- ' + ' '.join(inner_list) + '\n')
-            # data = list of lists; join inner lists
-        f.write('\n\n' + '## Zubereitung' + '\n\n')
-        f.write(instruct.strip())  # .strip() to remove leadin and ending whitespace
-
+    writeFile(title, ingreds, instruct)
 
 def allrecipes(soup):
     # title
@@ -41,13 +35,17 @@ def allrecipes(soup):
     # instructions
     instruct = soup.find('div', attrs={'class':'directLeft'})
     instruct = [s.getText().strip() for s in instruct.findAll('li')]
+    instruct = ' '.join(instruct)
     # write to file
-    with open(title.lower().replace(' ', '-') + '.md', 'w') as f:
-        f.write('# ' + title + '\n\n')
-        f.write('## Zutaten' + '\n\n')
-        f.write('\n'.join(ingreds))
-        f.write('\n\n' + '## Zubereitung' + '\n\n')
-        f.write(' '.join(instruct))
+    writeFile(title, ingreds, instruct)
+
+def writeFile(title, ingreds, instruct):
+        with codecs.open(title.lower().replace(' ', '-') + '.md', 'w', encoding="utf-8") as f:
+            f.write('# ' + title + '\n\n')
+            f.write('## Zutaten' + '\n\n')
+            f.write('\n'.join(ingreds))
+            f.write('\n\n' + '## Zubereitung' + '\n\n')
+            f.write(instruct)
 
 
 def main():
