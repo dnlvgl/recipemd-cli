@@ -37,7 +37,7 @@ def allrecipes(soup):
     # instructions
     instruct = soup.find('div', attrs={'class': 'directLeft'})
     instruct = [s.getText().strip() for s in instruct.findAll('li')]
-    instruct = ' '.join(instruct)
+    instruct = '\n\n'.join(instruct)
     # write to file
     writeFile(title, ingreds, instruct)
 
