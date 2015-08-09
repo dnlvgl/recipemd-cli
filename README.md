@@ -9,4 +9,4 @@ recipemd saves recipes from websites as markdown files.
 
 ## usage
 
-recipemd 'url-of-recipe'
+python recipemd.py 'url-of-recipe'

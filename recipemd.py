@@ -11,6 +11,8 @@ import argparse
 def chefkoch(soup):
     # title
     title = soup.find('h1', attrs={'class': 'page-title'}).text
+    if title == 'Fehler: Seite nicht gefunden' or 'Fehler: Rezept nicht gefunden':
+        raise ValueError('No recipe found, check URL')
     # ingredients
     ingreds = []
     table = soup.find('table', attrs={'class': 'incredients'})
@@ -29,7 +31,11 @@ def chefkoch(soup):
 
 def allrecipes(soup):
     # title
-    title = soup.find('h1', attrs={'id': 'itemTitle'}).text
+    try:
+        title = soup.find('h1', attrs={'id': 'itemTitle'}).text
+    except Exception:
+        print('No recipe found, check URL')
+        sys.exit(1)
     # ingredients
     ingreds = soup.find('div', attrs={'class': 'ingred-left'})
     ingreds = [s.getText().strip() for s in ingreds.findAll('li')]
@@ -50,6 +56,7 @@ def writeFile(title, ingreds, instruct):
             f.write('\n'.join(ingreds))
             f.write('\n\n' + '## Zubereitung' + '\n\n')
             f.write(instruct)
+            print('File written as: "' + title.lower().replace(' ', '-') + '.md"')
 
 
 def main():
@@ -57,7 +64,11 @@ def main():
     parser.add_argument('url', help='Input URL to parse recipe')
     args = parser.parse_args()
     url = args.url
-    page = requests.get(url)
+    try:
+        page = requests.get(url)
+    except Exception:
+        print('No valid URL')
+        sys.exit(1)
     soup = BeautifulSoup(page.text, "html5lib")
 
     if url.startswith('http://www.chefkoch.de/'):
@@ -65,7 +76,7 @@ def main():
     elif url.startswith('http://allrecipes.com/'):
         allrecipes(soup)
     else:
-        print ('nope')
+        print ('Website not supported')
 
 
 if __name__ == "__main__":
