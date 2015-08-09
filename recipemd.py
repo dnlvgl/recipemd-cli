@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 import codecs
 import sys
+import argparse
 
 
 def chefkoch(soup):
@@ -52,7 +53,10 @@ def writeFile(title, ingreds, instruct):
 
 
 def main():
-    url = sys.argv[1]
+    parser = argparse.ArgumentParser()
+    parser.add_argument('url', help='Input URL to parse recipe')
+    args = parser.parse_args()
+    url = args.url
     page = requests.get(url)
     soup = BeautifulSoup(page.text, "html5lib")
 
