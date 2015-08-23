@@ -49,6 +49,24 @@ def allrecipes(soup):
     writeFile(title, ingreds, instruct)
 
 
+def brigitte(soup):
+	# title
+	try:
+		title = soup.find('h1', attrs={'class': 'briTitle'}).text
+	except Exception:
+		print('No recipe found, check URL')
+		sys.exit(1)
+	# ingredients
+	ingreds = soup.find('div', attrs={'class': 'category_row_half'})
+	ingreds = [s.getText().strip() for s in ingreds.findAll('span', attrs={'itemprop': 'ingredients'})] # remove whitespace
+	ingreds = ['- ' + " ".join(s.split()) for s in ingreds]
+	# instructions
+	instruct = soup.find('div', attrs={'itemprop': 'recipeInstructions'}).text
+	instruct = instruct.strip()  # remove leadin and ending whitespace
+	# write to file
+	writeFile(title, ingreds, instruct)
+
+
 def writeFile(title, ingreds, instruct):
         with codecs.open(title.lower().replace(' ', '-') + '.md', 'w', encoding="utf-8") as f:
             f.write('# ' + title + '\n\n')
@@ -75,6 +93,8 @@ def main():
         chefkoch(soup)
     elif url.startswith('http://allrecipes.com/'):
         allrecipes(soup)
+    elif url.startswith('http://www.brigitte.de/rezepte/'):
+		brigitte(soup)
     else:
         print ('Website not supported')
 
