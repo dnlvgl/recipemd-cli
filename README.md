@@ -6,7 +6,8 @@ recipemd saves recipes from websites as markdown files.
 
 1. allrecipes.com
 2. chefkoch.de
-3. www.brigitte.de/rezepte/
+3. marthastewart.com
+4. brigitte.de/rezepte/
 
 ## usage
 

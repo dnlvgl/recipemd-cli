@@ -67,6 +67,26 @@ def brigitte(soup):
 	writeFile(title, ingreds, instruct)
 
 
+def stewart(soup):
+	# title
+	try:
+		title = soup.find('h1', attrs={'class': 'page-title'}).text.strip()
+	except Exception:
+		print('No recipe found, check URL')
+		sys.exit(1)
+	# ingredients
+	ingreds = soup.find('ul', attrs={'class': 'components-list'})
+	ingreds = [s.getText().strip() for s in ingreds.findAll('li', attrs={'class': 'components-item'})]
+	ingreds = ['- ' + " ".join(s.split()) for s in ingreds]
+	# instructions
+	instruct = soup.find('section', attrs={'class': 'directions-group'})
+	instruct = [s.getText().strip() for s in instruct.findAll('li')]
+	instruct = '\n\n'.join(instruct)
+	# write to file
+	writeFile(title, ingreds, instruct)
+
+
+
 def writeFile(title, ingreds, instruct):
         with codecs.open(title.lower().replace(' ', '-') + '.md', 'w', encoding="utf-8") as f:
             f.write('# ' + title + '\n\n')
@@ -95,6 +115,8 @@ def main():
         allrecipes(soup)
     elif url.startswith('http://www.brigitte.de/rezepte/'):
 		brigitte(soup)
+    elif url.startswith('http://www.marthastewart.com'):
+		stewart(soup)
     else:
         print ('Website not supported')
 
