@@ -6,6 +6,7 @@ import requests
 import codecs
 import sys
 import argparse
+from argparse import RawTextHelpFormatter
 
 
 def chefkoch(soup):
@@ -98,8 +99,8 @@ def writeFile(title, ingreds, instruct):
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('url', help='Input URL to parse recipe')
+    parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter)
+    parser.add_argument('url', help='Input URL to parse recipe \nSupported websites:\nchefkoch.de\nallrecipes.com\nbrigitte.de\nmarthastewart.com')
     args = parser.parse_args()
     url = args.url
     try:
